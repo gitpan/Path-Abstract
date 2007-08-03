@@ -2,7 +2,13 @@ TODO:
 - Integrate File::Spec-like UNIX tests
 - Add more Path::Class convenience methods (mkpath, contains, subsumes, etc.)
 
-0.06 Monday July 09 20:00:44 PDT 2007 2007:
+0.07 Monday July 30 11:23:26 PDT 2007:
+- Discard empty ('') positions in the path before joining with a slash
+
+0.07 2007-07-18:
+- Retain trailing slash, if any
+
+0.06 Monday July 09 20:00:44 PDT 2007:
 - Name change from Path::Lite to Path::Abstract
 - Path::Lite is in stasis indefinitely
 

@@ -9,7 +9,7 @@ Path::Abstract - A fast and featureful class for UNIX-style path manipulation.
 
 =head1 VERSION
 
-Version 0.06
+Version 0.07
 
 =head1 SYNOPSIS
 
@@ -25,7 +25,7 @@ Version 0.06
 
 =cut
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use Sub::Exporter -setup => {
 	exports => [ path => sub { sub {
@@ -85,8 +85,10 @@ sub clone {
 
 sub _canonize(@) {
 	no warnings 'uninitialized';
+    @_ = grep { length $_ } @_;
 	my $leading = $_[0] && substr($_[0], 0, 1) eq '/';
 	my $path = join '/', @_;
+	my $trailing = $path && substr($path, -1) eq '/';
 
 	# From File::Spec::Unix::canonpath
 	$path =~ s|/{2,}|/|g;				# xx////xx  -> xx/xx
@@ -95,6 +97,7 @@ sub _canonize(@) {
 	$path =~ s|^/(?:\.\./)+|/|;			# /../../xx -> xx
 	$path =~ s|^/\.\.$|/|;				# /..       -> /
 	$path =~ s|/\z|| unless $path eq "/";		# xx/       -> xx
+	$path .= '/' if $path ne "/" && $trailing;
 
 	$path =~ s/^\/+// unless $leading;
 	return $path;
