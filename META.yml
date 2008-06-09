@@ -22,4 +22,4 @@ requires:
   Carp: 0
   Scalar::Util: 0
   Sub::Exporter: 0
-version: 0.081
+version: 0.083

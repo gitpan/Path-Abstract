@@ -97,10 +97,13 @@ sub clone {
 
 sub _canonize(@) {
 	no warnings 'uninitialized';
-    @_ = map { $_ = ref eq "Path::Abstract::Fast" ? $$_ : $_; length() ? $_ : () } @_;
+    @_ = map {
+        $_ = ref && (ref eq "Path::Abstract::Fast" || blessed $_ && $_->isa("Path::Abstract::Fast")) ? $$_ : $_;
+        length() ? $_ : ();
+    } @_;
 	my $leading = $_[0] && substr($_[0], 0, 1) eq '/';
 	my $path = join '/', @_;
-	my $trailing = $path && substr($path, -1) eq '/';
+    my $trailing = $path && substr($path, -1) eq '/';
 
 	# From File::Spec::Unix::canonpath
 	$path =~ s|/{2,}|/|g;				# xx////xx  -> xx/xx
