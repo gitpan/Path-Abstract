@@ -1,12 +1,12 @@
 ---
-abstract: 'A fast and featureful class for UNIX-style path manipulation'
+abstract: 'Fast and featureful UNIX-style path manipulation'
 author:
   - 'Robert Krimen, C<< <rkrimen at cpan.org> >>'
 build_requires:
   Test::Lazy: 0
   Test::More: 0
 distribution_type: module
-generated_by: 'Module::Install version 0.710'
+generated_by: 'Module::Install version 0.750'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.3.html
