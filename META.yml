@@ -5,12 +5,13 @@ author:
 build_requires:
   Test::Lazy: 0
   Test::More: 0
+  Test::Most: 0
 distribution_type: module
-generated_by: 'Module::Install version 0.750'
+generated_by: 'Module::Install version 0.760'
 license: perl
 meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.3.html
-  version: 1.3
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
 name: Path-Abstract
 no_index:
   directory:
@@ -22,4 +23,6 @@ requires:
   Carp: 0
   Scalar::Util: 0
   Sub::Exporter: 0
-version: 0.083
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.093
