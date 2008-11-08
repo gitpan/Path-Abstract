@@ -3,27 +3,21 @@
 use strict;
 use warnings;
 
-use Test::More (0 ? (tests => 1) : 'no_plan');
+use Test::Most;
 use Test::Lazy qw/template try/;
 use Scalar::Util qw/refaddr/;
 
+plan qw/no_plan/;
+
 use Path::Abstract qw/path/;
-
-
-{
-    my $path = path [qw/a b c d ef g h/];
-    is($path, "a/b/c/d/ef/g/h");
-    $path = $path->child([qw/.. ij k lm/]);
-    is($path, "a/b/c/d/ef/g/h/../ij/k/lm");
-}
 
 use vars qw/$c $d/;
 sub get { return path(@_)->path }
 my $path = path;
 $path = new Path::Abstract;
 
-my $red = Path::Abstract::Fast->new("red");
-my $blue = Path::Abstract::Fast->new("blue");
+my $red = Path::Abstract::Underload->new("red");
+my $blue = Path::Abstract::Underload->new("blue");
 $path = Path::Abstract->new($red, $blue);
 is($path, "red/blue");
 
@@ -118,16 +112,16 @@ $template->test([
 # }}}
 # is_branch {{{
 $template->test([
-	[ "%?->is_branch" => is => "" ],
-	[ "%?->is_branch" => is => "" ],
 	[ "%?->is_branch" => is => "1" ],
 	[ "%?->is_branch" => is => "" ],
 	[ "%?->is_branch" => is => "1" ],
 	[ "%?->is_branch" => is => "" ],
 	[ "%?->is_branch" => is => "1" ],
 	[ "%?->is_branch" => is => "" ],
+	[ "%?->is_branch" => is => "1" ],
 	[ "%?->is_branch" => is => "" ],
-	[ "%?->is_branch" => is => "" ],
+	[ "%?->is_branch" => is => "1" ],
+	[ "%?->is_branch" => is => "1" ],
 	[ "%?->is_branch" => is => "1" ],
 ]);
 # }}}
@@ -164,13 +158,13 @@ $template->test([
 # list {{{
 $template->test([
 	[ "%?->list" => is => [] ],
-	[ "%?->list" => is => ["/"] ],
+	[ "%?->list" => is => [] ],
 	[ "%?->list" => is => ["a"] ],
-	[ "%?->list" => is => ["/a"] ],
+	[ "%?->list" => is => ["a"] ],
 	[ "%?->list" => is => ["a","b"] ],
-	[ "%?->list" => is => ["/a","b"] ],
+	[ "%?->list" => is => ["a","b"] ],
 	[ "%?->list" => is => ["a", "b", "c"] ],
-	[ "%?->list" => is => ["/a", "b", "c"] ],
+	[ "%?->list" => is => ["a", "b", "c"] ],
 	[ "%?->list" => is => [] ],
 	[ "%?->list" => is => [] ],
 	[ "%?->list" => is => ["a", "b", "c", "d"] ],
@@ -178,31 +172,31 @@ $template->test([
 # }}}
 # first {{{
 $template->test([
-	[ "%?->first" => is => undef ],
-	[ "%?->first" => is => ["/"] ],
+	[ "%?->first" => is => [''] ],
+	[ "%?->first" => is => [''] ],
 	[ "%?->first" => is => ["a"] ],
-	[ "%?->first" => is => ["/a"] ],
 	[ "%?->first" => is => ["a"] ],
-	[ "%?->first" => is => ["/a"] ],
 	[ "%?->first" => is => ["a"] ],
-	[ "%?->first" => is => ["/a"] ],
-	[ "%?->first" => is => [] ],
-	[ "%?->first" => is => [] ],
+	[ "%?->first" => is => ["a"] ],
+	[ "%?->first" => is => ["a"] ],
+	[ "%?->first" => is => ["a"] ],
+	[ "%?->first" => is => [''] ],
+	[ "%?->first" => is => [''] ],
 	[ "%?->first" => is => ["a"] ],
 ]);
 # }}}
 # last {{{
 $template->test([
-	[ "%?->last" => is => undef ],
-	[ "%?->last" => is => ["/"] ],
+	[ "%?->last" => is => [''] ],
+	[ "%?->last" => is => [''] ],
 	[ "%?->last" => is => ["a"] ],
-	[ "%?->last" => is => ["/a"] ],
+	[ "%?->last" => is => ["a"] ],
 	[ "%?->last" => is => ["b"] ],
 	[ "%?->last" => is => ["b"] ],
 	[ "%?->last" => is => ["c"] ],
 	[ "%?->last" => is => ["c"] ],
-	[ "%?->last" => is => [] ],
-	[ "%?->last" => is => [] ],
+	[ "%?->last" => is => [''] ],
+	[ "%?->last" => is => [''] ],
 	[ "%?->last" => is => ["d"] ],
 ]);
 # }}}

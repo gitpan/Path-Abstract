@@ -3,12 +3,28 @@ TODO:
     - Add more Path::Class-style convenience methods (mkpath, contains, subsumes, etc.)
     - Make ->list more like Path::Class::Dir::list
     - Document differences between Path::Abstract and Path::Class
+    
+0.094_1 Friday November 07 16:28:42 PST 2008:
+    - Added ->at
+    - Added ->beginning
+    - Added ->ending
+    - ->first && ->last now return '' instead of undef
+    - Fixed bug where 'a.html.tar.gz'->pop = 'a'
+    - Changed ->list: now returns the empty list if $path is '/' 
+    - Changed ->list: does not return leading a leading slash '/a'->list = ('a')
+    - Changed ->split: an alternative to old ->list
+    - Changed ->first
+    - Changed ->last
+    - Added ->append
+    - Added ->extension
+    - Added greediness ('^', '$', '', & '*') to ->pop and ->up
+    - '' now considered a branch
 
 0.093 Friday August 15 20:14:42 PDT 2008:
-    - Deprecating Path::Abstract::Fast
+    - Deprecating Path::Abstract::Fast (into Path::Abstract::Underload)
 
 0.092 Thursday August 07 12:06:48 PDT 2008:
-    - More test silliness;  should be fixed now
+    - More test silliness; should be fixed now
 
 0.091 Wednesday August 06 19:14:47 PDT 2008:
     - Testing bug fix
