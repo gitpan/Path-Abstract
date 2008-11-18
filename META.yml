@@ -1,5 +1,5 @@
 ---
-abstract: 'Fast and featureful UNIX-style path manipulation'
+abstract: 'Fast and featureful UNIX-style path parsing and manipulation'
 author:
   - 'Robert Krimen, C<< <rkrimen at cpan.org> >>'
 build_requires:
@@ -26,4 +26,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://github.com/robertkrimen/path-abstract/tree/master
-version: 0.094_2
+version: 0.095
