@@ -1,21 +1,94 @@
 package Path::Abstract;
+BEGIN {
+  $Path::Abstract::VERSION = '0.096';
+}
+# ABSTRACT: Fast and featureful UNIX-style path parsing and manipulation
 
 use warnings;
 use strict;
+
+use vars qw/$_0_093_warn %_0_093_warning/;
+
+
+$_0_093_warn = 1;
+
+use Sub::Exporter;
+{
+    my $exporter = Sub::Exporter::build_exporter({
+        exports => [ path => sub { sub {
+            return __PACKAGE__->new(@_)
+        } } ],
+    });
+
+    sub import {
+        if (@_ && grep { defined && $_ eq '--no_0_093_warning' } @_) {
+            $_0_093_warn = 0;
+        }
+        @_ = grep { ! defined || $_ !~ m/^--/ } @_;
+        goto $exporter;
+    };
+}
+
+use overload
+	'""' => 'get',
+	fallback => 1,
+;
+
+use base qw/Path::Abstract::Underload/;
+
+use Carp;
+sub _0_093_warn {
+    if ($_0_093_warn) {
+        my ($package, $filename, $line, $subroutine) = caller(1);
+        if (! $_0_093_warning{$subroutine}) {
+            $_0_093_warning{$subroutine} = 1;
+            $subroutine =~ s///g;
+            carp "** $subroutine behavior has changed since 0.093\n" . 
+                 "** To disable this warning: use Path::Abstract qw/--no_0_093_warning/"
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1;
+
+__END__
+=pod
 
 =head1 NAME
 
 Path::Abstract - Fast and featureful UNIX-style path parsing and manipulation
 
-=cut
-
-use vars qw/$VERSION $_0_093_warn %_0_093_warning/;
-
-$VERSION = '0.095';
-
 =head1 VERSION
 
-Version 0.095
+version 0.096
 
 =head1 SYNOPSIS
 
@@ -69,47 +142,6 @@ Version 0.095
 
 Path::Abstract is a tool for parsing, interrogating, and modifying a UNIX-style path. The parsing behavior
 is similar to L<File::Spec::Unix>, except that trailing slashes are preserved (converted into a single slash).
-
-=cut
-
-$_0_093_warn = 1;
-
-use Sub::Exporter;
-{
-    my $exporter = Sub::Exporter::build_exporter({
-        exports => [ path => sub { sub {
-            return __PACKAGE__->new(@_)
-        } } ],
-    });
-
-    sub import {
-        if (@_ && grep { defined && $_ eq '--no_0_093_warning' } @_) {
-            $_0_093_warn = 0;
-        }
-        @_ = grep { ! defined || $_ !~ m/^--/ } @_;
-        goto $exporter;
-    };
-}
-
-use overload
-	'""' => 'get',
-	fallback => 1,
-;
-
-use base qw/Path::Abstract::Underload/;
-
-use Carp;
-sub _0_093_warn {
-    if ($_0_093_warn) {
-        my ($package, $filename, $line, $subroutine) = caller(1);
-        if (! $_0_093_warning{$subroutine}) {
-            $_0_093_warning{$subroutine} = 1;
-            $subroutine =~ s///g;
-            carp "** $subroutine behavior has changed since 0.093\n" . 
-                 "** To disable this warning: use Path::Abstract qw/--no_0_093_warning/"
-        }
-    }
-}
 
 =head1 Different behavior since 0.093
 
@@ -174,7 +206,7 @@ For an alternative to ->first, try ->beginning
 Simlar to ->first
 
 The old behavior:
-    
+
     1. Would return undef for the empty path
     2. Would include the leading slash (if present)
     3. Would NOT include the trailing slash (if present)
@@ -205,16 +237,16 @@ For an alternative to ->last, try ->ending
 =head2 $path->is_branch
 
 The old behavior:
-    
+
     1. The empty patch ('') would not be considered a branch
-    
+
 The new behavior:
-    
+
     1. The empty patch ('') IS considered a branch
 
 =back
 
-=head1 METHODS
+=head1 USAGE
 
 =head2 Path::Abstract->new( <path> )
 
@@ -224,8 +256,6 @@ Create a new C<Path::Abstract> object using <path> or by joining each <part> wit
 
 Returns the new C<Path::Abstract> object
 
-=cut
-
 =head2 Path::Abstract::path( <path> )
 
 =head2 Path::Abstract::path( <part>, [ <part>, ..., <part> ] )
@@ -234,13 +264,9 @@ Create a new C<Path::Abstract> object using <path> or by joining each <part> wit
 
 Returns the new C<Path::Abstract> object
 
-=cut
-
 =head2 $path->clone
 
 Returns an exact copy of $path
-
-=cut
 
 =head2 $path->set( <path> )
 
@@ -250,21 +276,15 @@ Set the path of $path to <path> or the concatenation of each <part> (separated b
 
 Returns $path
 
-=cut
-
 =head2 $path->is_nil
 
 =head2 $path->is_empty
 
 Returns true if $path is equal to ""
 
-=cut
-
 =head2 $path->is_root
 
 Returns true if $path is equal to "/"
-
-=cut
 
 =head2 $path->is_tree
 
@@ -272,8 +292,6 @@ Returns true if $path begins with "/"
 
 	path("/a/b")->is_tree # Returns true
 	path("c/d")->is_tree # Returns false
-
-=cut
 
 =head2 $path->is_branch
 
@@ -284,23 +302,17 @@ Returns true if $path does NOT begin with a "/"
 	path("c/d")->is_branch # Returns true
 	path("/a/b")->is_branch # Returns false
 
-=cut
-
 =head2 $path->to_tree
 
 Change $path by prefixing a "/" if it doesn't have one already
 
 Returns $path
 
-=cut
-
 =head2 $path->to_branch
 
 Change $path by removing a leading "/" if it has one
 
 Returns $path
-
-=cut
 
 =head2 $path->list
 
@@ -311,11 +323,7 @@ Returns the path in list form by splitting at each "/"
 
 NOTE: This behavior is different since 0.093 (see above)
 
-=cut
-
 =head2 $path->split
-
-=cut
 
 =head2 $path->first
 
@@ -326,8 +334,6 @@ Returns the first part of $path up to the first "/" (but not including the leadi
 
 This is equivalent to $path->at(0)
 
-=cut
-
 =head2 $path->last
 
 Returns the last part of $path up to the last "/"
@@ -336,8 +342,6 @@ Returns the last part of $path up to the last "/"
 	path("/a/b/")->last # Returns "b"
 
 This is equivalent to $path->at(-1)
-
-=cut
 
 =head2 $path->at( $index )
 
@@ -348,8 +352,6 @@ You can use a negative $index to start from the end of path
     path("/a/b/c/").at(-1) # c (equivalent to $path->last)
     path("/a/b/c/").at(1)  # b
 
-=cut
-
 =head2 $path->beginning
 
 Returns the first part of path, including the leading slash, if any
@@ -357,16 +359,12 @@ Returns the first part of path, including the leading slash, if any
     path("/a/b/c/")->beginning # /a
     path("a/b/c/")->beginning  # a
 
-=cut
-
 =head2 $path->ending
 
 Returns the first part of path, including the leading slash, if any
 
     path("/a/b/c/")->ending # c/
     path("/a/b/c")->ending  # c
-
-=cut
 
 =head2 $path->get
 
@@ -376,8 +374,6 @@ Returns the path in string or scalar form
 
 	path("c/d")->list # Returns "c/d"
 	path("/a/b/")->last # Returns "/a/b"
-
-=cut
 
 =head2 $path->push( <part>, [ <part>, ..., <part> ] )
 
@@ -389,8 +385,6 @@ Returns $path
 
     path( "a/b/c" )->down( "d/e" ) # a/b/c/d/e
 
-=cut
-
 =head2 $path->child( <part>, [ <part>, ..., <part> ] )
 
 Make a copy of $path and push each <part> to the end of the new path.
@@ -399,8 +393,6 @@ Returns the new child path
 
     path( "a/b/c" )->child( "d/e" ) # a/b/c/d/e
 
-=cut
-
 =head2 $path->append( $part1, [ $part2 ], ... )
 
 Modify path by appending $part1 WITHOUT separating it by a slash. Any, optional,
@@ -408,8 +400,6 @@ following $part2, ..., will be separated by slashes as normal
 
       $path = path( "a/b/c" )
       $path->append( "d", "ef/g", "h" ) # "a/b/cd/ef/g/h"
-
-=cut
 
 =head2 $path->extension
 
@@ -432,15 +422,11 @@ Modify path by changing the existing extension of path, if any, to $extension
 
 Returns path
 
-=cut
-
 =head2 $path->pop( <count> )
 
 Modify $path by removing <count> parts from the end of $path
 
 Returns the removed path as a C<Path::Abstract> object
-
-=cut
 
 =head2 $path->up( <count> )
 
@@ -448,15 +434,11 @@ Modify $path by removing <count> parts from the end of $path
 
 Returns $path
 
-=cut
-
 =head2 $path->parent( <count> )
 
 Make a copy of $path and pop <count> parts from the end of the new path
 
 Returns the new parent path
-
-=cut
 
 =head2 $path->file
 
@@ -466,8 +448,6 @@ Create a new C<Path::Class::File> object using $path as a base, and optionally e
 
 Returns the new file object
 
-=cut
-
 =head2 $path->dir
 
 =head2 $path->dir( <part>, [ <part>, ..., <part> ] )
@@ -475,8 +455,6 @@ Returns the new file object
 Create a new C<Path::Class::Dir> object using $path as a base, and optionally extending it by each <part>
 
 Returns the new dir object
-
-=cut
 
 =head1 SEE ALSO
 
@@ -492,65 +470,20 @@ L<Path::Abstract::Underload>
 
 L<URI::PathAbstract>
 
-=head1 AUTHOR
-
-Robert Krimen, C<< <rkrimen at cpan.org> >>
-
-=head1 SOURCE
-
-You can contribute or fork this project via GitHub:
-
-L<http://github.com/robertkrimen/path-abstract/tree/master>
-
-    git clone git://github.com/robertkrimen/path-abstract.git Path-Abstract
-
-=head1 BUGS
-
-Please report any bugs or feature requests to
-C<bug-path-lite at rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Path-Abstract>.
-I will be notified, and then you'll automatically be notified of progress on
-your bug as I make changes.
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc Path::Abstract
-
-You can also look for information at:
-
-=over 4
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Path-Abstract>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Path-Abstract>
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Path-Abstract>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Path-Abstract>
-
-=back
-
 =head1 ACKNOWLEDGEMENTS
 
 Thanks to Joshua ben Jore, Max Kanat-Alexander, and Scott McWhirter for discovering the "use overload ..." slowdown issue.
 
-=head1 COPYRIGHT & LICENSE
+=head1 AUTHOR
 
-Copyright 2007 Robert Krimen, all rights reserved.
+  Robert Krimen <robertkrimen@gmail.com>
 
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Robert Krimen.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
 
-1; # End of Path::Abstract

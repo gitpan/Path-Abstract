@@ -1,25 +1,12 @@
 package Path::Abstract::Underload;
+BEGIN {
+  $Path::Abstract::Underload::VERSION = '0.096';
+}
+# ABSTRACT: Path::Abstract without stringification overloading
 
 use warnings;
 use strict;
 
-=head1 NAME
-
-Path::Abstract::Underload - Path::Abstract without stringification overloading
-
-=head1 SYNOPSIS
-
-  use Path::Abstract::Underload;
-
-  my $path = Path::Abstract::Underload->new("/apple/banana");
-
-  # $parent is "/apple"
-  my $parent = $path->parent;
-
-  # $cherry is "/apple/banana/cherry.txt"
-  my $cherry = $path->child("cherry.txt");
-
-=cut
 
 use Sub::Exporter -setup => {
 	exports => [ path => sub { sub {
@@ -31,31 +18,6 @@ use Carp;
 
 require Path::Abstract::Fast; # For now...
 
-=head1 DESCRIPTION
-
-This is a version of Path::Abstract without the magic "use overload ..." stringification.
-
-Unfortunately, without overloading, you can't do this:
-
-    my $path = Path::Abstract::Underload->new("/a/path/to/somewhere");
-
-    print "$path\n"; # Will print out something like "Path::Abstract::Underload=SCALAR(0xdffaa0)\n"
-
-You'll have to do this instead:
-
-    print $path->get, "\n"; Will print out "/a/path/to/somewhere\n"
-    # Note, you can also use $path->stringify or $path->path
-
-    # You could also do this (but it's safer to do one of the above):
-    print $$path, "\n";
-
-Or, just use L<Path::Abstract>
-
-=head1 DOCUMENTATION
-
-See L<Path::Abstract> for documentation & usage
-
-=cut
 
 sub new {
 	my $path = "";
@@ -421,3 +383,64 @@ BEGIN {
 }
 
 1; # End of Path::Abstract::Underload
+
+__END__
+=pod
+
+=head1 NAME
+
+Path::Abstract::Underload - Path::Abstract without stringification overloading
+
+=head1 VERSION
+
+version 0.096
+
+=head1 SYNOPSIS
+
+  use Path::Abstract::Underload;
+
+  my $path = Path::Abstract::Underload->new("/apple/banana");
+
+  # $parent is "/apple"
+  my $parent = $path->parent;
+
+  # $cherry is "/apple/banana/cherry.txt"
+  my $cherry = $path->child("cherry.txt");
+
+=head1 DESCRIPTION
+
+This is a version of Path::Abstract without the magic "use overload ..." stringification.
+
+Unfortunately, without overloading, you can't do this:
+
+    my $path = Path::Abstract::Underload->new("/a/path/to/somewhere");
+
+    print "$path\n"; # Will print out something like "Path::Abstract::Underload=SCALAR(0xdffaa0)\n"
+
+You'll have to do this instead:
+
+    print $path->get, "\n"; Will print out "/a/path/to/somewhere\n"
+    # Note, you can also use $path->stringify or $path->path
+
+    # You could also do this (but it's safer to do one of the above):
+    print $$path, "\n";
+
+Or, just use L<Path::Abstract>
+
+=head1 DOCUMENTATION
+
+See L<Path::Abstract> for documentation & usage
+
+=head1 AUTHOR
+
+  Robert Krimen <robertkrimen@gmail.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Robert Krimen.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
